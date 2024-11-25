@@ -1,0 +1,14 @@
+svg{
+    width: 80%;
+    height: auto;    
+}
+svg path{
+    fill:#7cdbfd;
+    stroke: #36cafa;
+    stroke-width: .25;
+}
+svg path:hover{
+    fill:#0091c9;
+    transition: fill 0.2s;
+    cursor: pointer;
+}
