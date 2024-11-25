@@ -18,3 +18,39 @@
   font-size: 20px;
   color: white;
 }
+article{
+  padding-top: 45px;
+  padding-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+article p{
+  text-align: center;
+  font-size: 22px;
+  width: 70%;
+}
+
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  overflow-x: hidden;
+  margin-bottom: 45px;
+}
+.images img {
+  max-width: 22%;
+  height: auto;
+  object-fit: cover;
+}
+.languages{
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+.language{
+  padding: 0;
+  margin: 5px;
+  font-size: 25px;
+}

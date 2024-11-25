@@ -12,3 +12,10 @@ svg path:hover{
     transition: fill 0.2s;
     cursor: pointer;
 }
+
+.selected{
+    fill:#0091c9;
+}
+.selected path{
+    fill:#0091c9;
+}

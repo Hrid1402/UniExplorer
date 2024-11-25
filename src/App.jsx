@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
-import './styles/App.css'
-import Map from './Map.jsx'
+import { useEffect, useState } from 'react';
+import './styles/App.css';
+import Map from './Map.jsx';
 
 function App() {
   const [country, setCountry] = useState(null);
   const [countryData, setCountryData] = useState(null);
   const [universitiesData, setUniversitiesData] = useState(null);
+  const [countryImages, setCountryImages] = useState([]);
+  const [countryDescription, setCountryDescription] = useState(null);
 
   function selectCountry(country){
     setCountry(country)
@@ -15,7 +17,6 @@ function App() {
     const url = "https://countries.mdiwanshu.workers.dev/search?name=" + country;
     fetch(corsProxy + encodeURIComponent(url)).then(r => r.json()).then(r=>{
       let index = (country != "united states") ? 0 : 1;
-      console.log(r[index])
       setCountryData(
         {
           name: r[index].name.common,
@@ -33,8 +34,25 @@ function App() {
     const corsProxy = "https://corsproxy.io/?";
     const url = "http://universities.hipolabs.com/search?country=" + country;
     fetch(corsProxy + encodeURIComponent(url)).then(r => r.json()).then(r=>{
-      console.log(r),
       setUniversitiesData(r);
+    }).catch(e=>console.log(e));
+  }
+  async function getCountryPhotos() {
+    const url = "https://api.unsplash.com/search/photos?query= "+ country +"&per_page=3&client_id=" + import.meta.env.VITE_API_KEY;
+    fetch(url).then(r => r.json()).then(r=>{
+      let images = [];
+      r.results.map(img => {
+        images.push(img.urls.regular);
+      });
+      setCountryImages(images);
+
+    }).catch(e=>console.log(e));
+  }
+
+  async function getCountryDescription() {
+    const url = "https://en.wikipedia.org/api/rest_v1/page/summary/" + country;
+    fetch(url).then(r => r.json()).then(r=>{
+      setCountryDescription(r.extract);
     }).catch(e=>console.log(e));
   }
 
@@ -46,6 +64,8 @@ function App() {
     getCountryData();
     getUniversitiesData();
     window.scrollTo(0, 0);
+    getCountryPhotos();
+    getCountryDescription();
   }, [country]);
 
   return (
@@ -62,18 +82,26 @@ function App() {
         {
           countryData.languages ? 
           <>
-          <h2>Languages:</h2>
+          
+          <div className='languages'>
+            <h2 className='languages'>Languages:</h2>
             {
                 Object.entries(countryData.languages).map(([key, value]) =>(
-                  <h2 key={key}>{value}</h2>
+                  <p className='language'  key={key}>{value}</p>
                 ))
             }
+          </div>  
           </>
 
           :
           null
         }
-      </div> : null
+        <div className="images">
+          {countryImages.map((imgURL, i) => {
+                return <img src={imgURL} key={i}></img>
+            })}
+        </div>
+      </div> : <div><h1>UniExplorer</h1><h3>Discover universities across the globe</h3></div>
       }
       
       <Map selectCountry={selectCountry}></Map>
@@ -94,6 +122,14 @@ function App() {
               </div>
             </div>
           </>: null
+      }
+      {
+        countryDescription && countryData?
+        <article>
+          <h2>{countryData.name} Overview</h2>
+          <p>{countryDescription}</p>
+          
+          </article> : null
       }
     </>
   )
